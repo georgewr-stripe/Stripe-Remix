@@ -1,6 +1,6 @@
 import React from "react";
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
-import { Stripe } from "@stripe/stripe-js";
+import { Stripe } from "@stripe/stripe-js/types/stripe-js/stripe";
 
 interface Props {
   clientSecret: string;

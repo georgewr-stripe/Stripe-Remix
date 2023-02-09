@@ -14,7 +14,7 @@
   "host_permissions": ["http://localhost:3000/*"],
   "web_accessible_resources": [
     {
-      "resources": ["assets/stripe-logo.png"],
+      "resources": ["assets/remix-logo.png"],
       "matches": ["https://*/*"]
     }
   ],

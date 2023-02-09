@@ -117,9 +117,9 @@ const Toolbar = React.forwardRef(
           justifyContent: "space-between",
         }}
       >
-        <div style={{ width: "30%", height: "100%" }}>
+        <div style={{ width: "30%", height: "100%", display: "flex" }}>
           <img
-            src={chrome.runtime.getURL("assets/stripe-logo.png")}
+            src={chrome.runtime.getURL("assets/remix-logo.png")}
             style={{
               marginRight: "1rem",
               height: "3rem",
@@ -178,7 +178,7 @@ const Toolbar = React.forwardRef(
                 lineHeight: "1",
                 overflow: "hidden",
                 height: "1em",
-                //   textIndent: "-0.9em",
+                marginRight: "1rem",
                 WebkitTextStroke: "0.05em #fff",
                 ...toggleTransitionStyles,
               }}
@@ -217,6 +217,7 @@ const Toolbar = React.forwardRef(
                 className="slot__label"
                 style={{
                   display: "block",
+                  color: "white",
                   transformOrigin: " 50% 100%",
                   transform: editMode ? "translateY(-100%) scaleY(1)" : "",
                   ...toggleTransitionStyles,
