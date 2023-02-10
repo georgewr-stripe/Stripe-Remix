@@ -4,12 +4,13 @@ import useMouseTarget from "./useMouseTarget";
 interface Props {
   visible: boolean;
   toolbarRef: React.RefObject<HTMLDivElement>;
+  paymentRef: React.RefObject<HTMLDivElement>;
   selected: HTMLElement | null;
   setSelected: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
 }
 
 const DOMEditor = (props: Props) => {
-  const { visible, toolbarRef, selected, setSelected } = props;
+  const { visible, toolbarRef, selected, setSelected, paymentRef } = props;
   const [onScreen, setOnScreen] = React.useState(true);
   const target = useMouseTarget();
 
@@ -65,7 +66,8 @@ const DOMEditor = (props: Props) => {
         console.log("clicked", clicked);
         if (
           clicked !== toolbarRef.current &&
-          !toolbarRef.current?.contains(clicked)
+          !toolbarRef.current?.contains(clicked) &&
+          !paymentRef.current?.contains(clicked)
         ) {
           console.log("setting selected");
           setSelected(clicked);
@@ -75,7 +77,7 @@ const DOMEditor = (props: Props) => {
       console.log("unsetting selected", visible, selected);
       setSelected(null);
     },
-    [visible, selected, setSelected, toolbarRef]
+    [visible, selected, setSelected, toolbarRef, paymentRef]
   );
 
   React.useEffect(() => {
@@ -107,10 +109,15 @@ const DOMEditor = (props: Props) => {
 
   const isOnToolbar = React.useMemo<boolean>(() => {
     if (target?.element === toolbarRef.current) return true;
-    if (target?.element ? toolbarRef.current?.contains(target?.element) : false)
+    if (
+      target?.element
+        ? toolbarRef.current?.contains(target?.element) &&
+          paymentRef.current?.contains(target?.element)
+        : false
+    )
       return true;
     return false;
-  }, [target, toolbarRef]);
+  }, [target, toolbarRef, paymentRef]);
 
   const inspector = React.useCallback(() => {
     if (

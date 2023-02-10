@@ -1,14 +1,15 @@
 import { Stripe } from "@stripe/stripe-js/types/stripe-js";
-import React from "react";
+import React, { ReactElement } from "react";
 import ReactDOM from "react-dom";
 import Toggle from "./components/Toggle";
-import PaymentForm from "./PaymentForm";
-import env from "../env";
+import Payment from "./Payment";
+import { Elements } from "@stripe/react-stripe-js";
 
 interface Props {
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   selected: HTMLElement | null;
+  paymentRef: React.RefObject<HTMLDivElement>;
   setSelected: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
   stripePromise: Stripe | null;
 }
@@ -29,12 +30,20 @@ const toggleTransitionStyles: React.CSSProperties = {
 
 const Toolbar = React.forwardRef(
   (props: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { editMode, setEditMode, selected, setSelected, stripePromise } =
-      props;
-    const [deletedElements, setDeletedELements] = React.useState<HTMLElement[]>(
+    const {
+      editMode,
+      setEditMode,
+      selected,
+      setSelected,
+      stripePromise,
+      paymentRef,
+    } = props;
+    const [deletedElements, setDeletedElements] = React.useState<HTMLElement[]>(
       []
     );
-    const [UPE, setUPE] = React.useState<React.ReactPortal | null>(null);
+    const [paymentEl, setPaymentEl] = React.useState<React.ReactPortal | null>(
+      null
+    );
 
     const escFunction = React.useCallback(
       (event: KeyboardEvent) => {
@@ -47,7 +56,7 @@ const Toolbar = React.forwardRef(
 
     const deleteSelected = React.useCallback(() => {
       if (selected) {
-        setDeletedELements((prev) => [...prev, selected]);
+        setDeletedElements((prev) => [...prev, selected]);
         selected.style.display = "none";
         setSelected(null);
       }
@@ -56,46 +65,30 @@ const Toolbar = React.forwardRef(
     const restoreDeleted = React.useCallback(() => {
       if (deletedElements) {
         deletedElements.map((el) => (el.style.display = "block"));
-        setDeletedELements([]);
+        setDeletedElements([]);
       }
     }, [deletedElements]);
 
     const hideToolbar = React.useCallback(() => {}, []);
 
-    const insertStripePaymentElement = React.useCallback(async () => {
+    const insertStripePaymentElement = React.useCallback(() => {
       if (selected) {
-        const resp = await fetch(
-          env.SERVER_URL + "/api/create_payment_intent",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              amount: 1099,
-              currency: "gbp",
-              description: "Test Product",
-            }),
-          }
+        const children = Array.from(
+          selected.children as HTMLCollectionOf<HTMLElement>
         );
-        if (resp.ok) {
-          const { client_secret } = await resp.json();
-          console.log(client_secret);
-          const paymentForm = (
-            <PaymentForm
-              stripePromise={stripePromise}
-              clientSecret={client_secret}
-            />
-          );
-          const children = Array.from(
-            selected.children as HTMLCollectionOf<HTMLElement>
-          );
-          children.map((e) => {
-            e.style.display = "none";
-          });
-          setDeletedELements((prev) => [...prev, ...children]);
-          setUPE(ReactDOM.createPortal(paymentForm, selected));
-        } else {
-          console.log("Payment Intent Creation Failed:", await resp.text());
-        }
+        children.map((e) => {
+          e.style.display = "none";
+        });
+        setDeletedElements((prev) => [...prev, ...children]);
+        setEditMode(false);
+        setPaymentEl(
+          ReactDOM.createPortal(
+            <Elements stripe={stripePromise}>
+              <Payment ref={paymentRef} {...{ stripePromise }} />
+            </Elements>,
+            selected
+          )
+        );
       }
     }, [stripePromise, selected]);
 
@@ -228,7 +221,7 @@ const Toolbar = React.forwardRef(
             </label>
           </div>
         </div>
-        {UPE}
+        {paymentEl}
       </div>
     );
   }

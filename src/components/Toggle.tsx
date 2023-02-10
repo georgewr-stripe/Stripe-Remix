@@ -3,9 +3,14 @@ import React from "react";
 interface Props {
   on: boolean;
   setOn: React.Dispatch<React.SetStateAction<boolean>>;
+  colour?: string;
 }
 
 const Toggle = (props: Props) => {
+  const col = props.colour || "white";
+  const handleChange = () => {
+    props.setOn(!props.on);
+  };
   return (
     <>
       <input
@@ -14,14 +19,14 @@ const Toggle = (props: Props) => {
         type="checkbox"
         role="switch"
         name="toggle"
-        onChange={() => props.setOn(!props.on)}
+        onChange={handleChange}
         value="on"
         style={{
           borderRadius: "0.75em",
           boxShadow: "0 0 0 0.1em inset",
           cursor: "pointer",
           position: "relative",
-          color: "white",
+          color: col,
           //   marginRight: "0.25em",
           width: "3em",
           height: "1.5em",
@@ -36,12 +41,14 @@ const Toggle = (props: Props) => {
         }}
       />
       <div
-        onClick={() => props.setOn(!props.on)}
+        onClick={handleChange}
         style={{
-          background: "white",
+          background: col,
           borderRadius: "50%",
           content: "",
-          color: "white",
+          color: col,
+          cursor: "pointer",
+          alignSelf: "center",
           position: "relative",
           left: "-2.8rem",
           width: "1.1em",

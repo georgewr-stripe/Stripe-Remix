@@ -2,6 +2,7 @@ import React from "react";
 import DOMEditor from "./DOMEditor";
 import Toolbar from "./Toolbar";
 import env from "../env";
+import './app.css';
 import { Stripe } from "@stripe/stripe-js/types/stripe-js";
 
 if (!env.STRIPE_PK) {
@@ -13,6 +14,7 @@ function App() {
   const [stripePromise, setStripePromise] = React.useState<Stripe | null>(null);
   const [selected, setSelected] = React.useState<HTMLElement | null>(null);
   const toolbarRef = React.createRef<HTMLDivElement>();
+  const paymentRef = React.createRef<HTMLDivElement>()
 
   React.useEffect(() => {
     if (!stripePromise && window.Stripe) {
@@ -27,11 +29,12 @@ function App() {
     <div>
       <Toolbar
         ref={toolbarRef}
-        {...{ editMode, setEditMode, selected, setSelected, stripePromise }}
+        {...{ editMode, setEditMode, selected, setSelected, stripePromise, paymentRef }}
       />
       <DOMEditor
         visible={editMode}
         toolbarRef={toolbarRef}
+        paymentRef={paymentRef}
         selected={selected}
         setSelected={setSelected}
       />
