@@ -1,1 +1,0 @@
-chrome.action.onClicked.addListener((function(e){chrome.scripting.executeScript({files:["stripe.js","app.js"],target:{tabId:e.id}})}));
