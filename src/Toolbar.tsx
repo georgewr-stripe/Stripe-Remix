@@ -11,7 +11,7 @@ interface Props {
   selected: HTMLElement | null;
   paymentRef: React.RefObject<HTMLDivElement>;
   setSelected: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
-  stripePromise: Stripe | null;
+  stripePromise: Promise<Stripe | null>;
 }
 
 const buttonStyles: React.CSSProperties = {

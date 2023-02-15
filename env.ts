@@ -1,6 +1,6 @@
 const env = {
   STRIPE_PK:
-    "pk_test_51MWiTwFO3LThrOb1PboJmFtVIr4VGRoeNpq1IwndKt6jaEE1V8QBRMtysIKwzQzLJwjA1hvH0qgYYICaXMtUjOtt00CK6NYyns",
+    "pk_test_51MbhUkFqliGrngNgN41liAXf4TPvSx8EAxkblgr9P2webyC5YKG7EnvhRpCwbz97Q7jiyruBlVJM5NpJTdOJuF2800STyWmlAq",
   //   SERVER_URL: "http://localhost:3000",
   SERVER_URL: "https://stripe-remix-server.vercel.app",
 };
