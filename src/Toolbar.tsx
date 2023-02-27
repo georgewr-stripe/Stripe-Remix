@@ -155,7 +155,7 @@ const Toolbar = React.forwardRef(
             Insert Stripe
           </Button>
           <Button style={buttonStyles} onClick={hideToolbar}>
-            Hide
+            Hide Toolbar
           </Button>
           <div
             style={{
