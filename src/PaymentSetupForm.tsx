@@ -17,10 +17,11 @@ interface PaymentSetupProps {
   setAccordion: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PaymentSetup = (props: PaymentSetupProps) => {
+const PaymentSetupForm = (props: PaymentSetupProps) => {
   const [currency, setCurrency] = React.useState("gbp");
   const [price, setPrice] = React.useState<number | undefined>(10.99);
   const [description, setDescription] = React.useState("Test Product");
+  const [loading, setLoading] = React.useState(false);
 
   const {
     collectAddress,
@@ -58,6 +59,7 @@ const PaymentSetup = (props: PaymentSetupProps) => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const resp = await fetch(env.SERVER_URL + "/api/create_payment_intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -73,21 +75,22 @@ const PaymentSetup = (props: PaymentSetupProps) => {
     } else {
       console.log("Payment Intent Creation Failed:", await resp.text());
     }
+    setLoading(false);
   };
   return (
-    <div className="tw-p-4 tw-rounded-md tw-border-blurple tw-border-4">
+    <div className="p-4 rounded-md border-blurple border-4">
       <div className="">
         <div>
-          <div className="tw-px-4">
+          <div className="px-4">
             <label
               htmlFor="price"
-              className="tw-block tw-text-sm tw-font-medium tw-text-gray-700"
+              className="block text-sm font-medium text-gray-700"
             >
               Price
             </label>
-            <div className="tw-relative tw-mt-1 tw-rounded-md tw-shadow-sm">
-              <div className="tw-pointer-events-none tw-absolute tw-inset-y-0 tw-left-0 tw-flex tw-items-center tw-pl-3">
-                <span className="tw-text-gray-500 tw-sm:text-sm">
+            <div className="relative mt-1 rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <span className="text-gray-500 sm:text-sm">
                   {currencySymbol}
                 </span>
               </div>
@@ -97,10 +100,10 @@ const PaymentSetup = (props: PaymentSetupProps) => {
                 id="price"
                 value={price}
                 onChange={handlePriceChange}
-                className="tw-block tw-w-full tw-rounded-md tw-border-blurple tw-p-2 tw-border tw-pl-14 tw-pr-12 tw-focus:border-indigo-500 tw-focus:ring-indigo-500 tw-sm:text-sm"
+                className="block w-full rounded-md border-blurple p-2 border pl-14 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
-              <div className="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center">
-                <label htmlFor="currency" className="tw-sr-only">
+              <div className="absolute inset-y-0 right-0 flex items-center">
+                <label htmlFor="currency" className="sr-only">
                   Currency
                 </label>
                 <select
@@ -109,7 +112,7 @@ const PaymentSetup = (props: PaymentSetupProps) => {
                   value={currency}
                   defaultValue={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  className="tw-h-full tw-rounded-md tw-border-transparent tw-bg-transparent tw-py-0 tw-pl-2 tw-pr-7 tw-text-gray-500 tw-focus:border-indigo-500 tw-focus:ring-indigo-500 tw-sm:text-sm"
+                  className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 >
                   {CURRENCIES.map((c) => (
                     <option value={c} key={c}>
@@ -122,30 +125,29 @@ const PaymentSetup = (props: PaymentSetupProps) => {
           </div>
         </div>
       </div>
-      <div className="tw-mt-2 tw-p-4">
-          <label
-            htmlFor="description"
-            className="tw-block tw-text-sm tw-font-medium tw-text-gray-700"
-          >
-            Description
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              name="description"
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="tw-block tw-w-full tw-rounded-md tw-p-2 tw-border-blurple tw-border tw-tw-shadow-sm tw-focus:border-blurple tw-focus:ring-blurple tw-sm:text-sm"
-              placeholder="Test Product"
-            />
-          </div>
+      <div className="mt-2 p-4">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Description
+        </label>
+        <div className="mt-1">
+          <input
+            type="text"
+            name="description"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="block w-full rounded-md p-2 border-blurple border shadow-sm focus:border-blurple focus:ring-blurple sm:text-sm"
+            placeholder="Test Product"
+          />
         </div>
-      <div className="tw-flex tw-justify-evenly tw-align-middle">
-        
-        <div className="tw-mt-2 tw-p-4">
-          <div className="tw-flex tw-flex-row">
-            <span className="tw-text tw-mr-2">Collect Address?</span>
+      </div>
+      <div className="flex justify-evenly align-middle">
+        <div className="mt-2 p-4">
+          <div className="flex flex-row">
+            <span className="text mr-2">Collect Address?</span>
             <Toggle
               colour="#635BFF"
               on={collectAddress}
@@ -153,8 +155,8 @@ const PaymentSetup = (props: PaymentSetupProps) => {
             />
           </div>
           {collectAddress ? (
-            <div className="tw-flex tw-flex-row">
-              <span className="tw-mr-2">Billing</span>
+            <div className="flex flex-row">
+              <span className="mr-2">Billing</span>
               <Toggle
                 colour="#635BFF"
                 on={addressMode == "billing"}
@@ -168,27 +170,31 @@ const PaymentSetup = (props: PaymentSetupProps) => {
             ""
           )}
         </div>
-        <div className="tw-mt-2 tw-p-4">
-          <div className="tw-flex tw-flex-row">
-            <span className="tw-text tw-mr-2">Link?</span>
+        <div className="mt-2 p-4">
+          <div className="flex flex-row">
+            <span className="text mr-2">Link?</span>
             <Toggle colour="#635BFF" on={link} setOn={setLink} />
           </div>
         </div>
-        <div className="tw-mt-2 tw-p-4">
-          <div className="tw-flex tw-flex-row">
-            <span className="tw-text tw-mr-2">Accordion?</span>
+        <div className="mt-2 p-4">
+          <div className="flex flex-row">
+            <span className="text mr-2">Accordion?</span>
             <Toggle colour="#635BFF" on={accordion} setOn={setAccordion} />
           </div>
         </div>
       </div>
 
-      <div className="tw-w-full tw-flex tw-flex-row-reverse tw-mt-3 mr-4">
-        <Button className="" onClick={handleSubmit}>
-          Go
+      <div className="w-full flex flex-row-reverse mt-3 mr-4">
+        <Button
+          className="bg-blurple text-white"
+          onClick={handleSubmit}
+          showSpinner={loading}
+        >
+          Go!
         </Button>
       </div>
     </div>
   );
 };
 
-export default PaymentSetup;
+export default PaymentSetupForm;

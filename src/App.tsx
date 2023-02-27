@@ -2,8 +2,10 @@ import React from "react";
 import DOMEditor from "./DOMEditor";
 import Toolbar from "./Toolbar";
 import env from "../env";
-import "./app.css";
+import "./dom.css"
+
 import { loadStripe, Stripe } from "@stripe/stripe-js";
+import RemixFrame from "./RemixFrame";
 
 if (!env.STRIPE_PK) {
   throw "Stripe Public Key NOT FOUND, check env file";
@@ -25,11 +27,17 @@ function App() {
   //   }
   // }, [window.Stripe]); // V3
 
+  React.useEffect(() => {
+    document.body.style.top = '5rem'
+    document.body.style.position = 'absolute'
+  }, [])
+
   if (!stripePromise) {
     return <></>;
   }
   return (
     <div>
+      <RemixFrame>
       <Toolbar
         ref={toolbarRef}
         {...{
@@ -41,6 +49,7 @@ function App() {
           paymentRef,
         }}
       />
+      </RemixFrame>
       <DOMEditor
         visible={editMode}
         toolbarRef={toolbarRef}

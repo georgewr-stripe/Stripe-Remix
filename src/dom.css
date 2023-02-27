@@ -1,0 +1,21 @@
+.stripe-remix-frame iframe {
+  all: unset;
+  width: 100%;
+}
+
+#stripe-remix-app {
+    margin-top: -5rem;
+    position: fixed;
+    width: 100%;
+    z-index: 100000;
+  }
+
+  #stripe-remix-payment-element-form {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  #link-authentication-element {
+    margin-bottom: 2rem;
+  }

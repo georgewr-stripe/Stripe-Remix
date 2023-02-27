@@ -5,10 +5,10 @@ module.exports = {
     "./src/*.{js,jsx,ts,tsx}",
     "./src/components/*.{js,jsx,ts,tsx}",
   ],
-  prefix: "tw-",
   theme: {
     extend: {},
   },
+  important: true,
   plugins: [require("@tailwindcss/forms")({strategy: 'class'})],
   theme: {
     extend: {

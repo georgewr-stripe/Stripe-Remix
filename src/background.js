@@ -4,7 +4,7 @@ chrome.browserAction.onClicked.addListener(function (e) {
   //   target: { tabId: tab.id },
   // }); // V3
 
-  console.log("⚡️Loading Stripe Remix...", e);
+  console.log("⚡️Loading Stripe Remix...");
   fetch("https://js.stripe.com/v3").then((resp) => {
     resp.text().then((sjs) => {
       chrome.tabs.executeScript({ code: sjs });

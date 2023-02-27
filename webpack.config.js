@@ -23,8 +23,14 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"],
+        test: /\.(s*)css$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          "postcss-loader",
+
+          // "to-string-loader",
+        ],
       },
     ],
   },

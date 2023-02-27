@@ -63,18 +63,15 @@ const DOMEditor = (props: Props) => {
     (e: MouseEvent) => {
       if (visible && !selected) {
         const clicked = e.target as HTMLElement;
-        console.log("clicked", clicked);
         if (
           clicked !== toolbarRef.current &&
           !toolbarRef.current?.contains(clicked) &&
           !paymentRef.current?.contains(clicked)
         ) {
-          console.log("setting selected");
           setSelected(clicked);
           return;
         }
       }
-      console.log("unsetting selected", visible, selected);
       setSelected(null);
     },
     [visible, selected, setSelected, toolbarRef, paymentRef]

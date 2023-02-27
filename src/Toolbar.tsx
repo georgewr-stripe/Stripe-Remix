@@ -1,9 +1,9 @@
 import { Stripe } from "@stripe/stripe-js/types/stripe-js";
-import React, { ReactElement } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import Toggle from "./components/Toggle";
-import Payment from "./Payment";
-import { Elements } from "@stripe/react-stripe-js";
+import Button from "./components/Button";
+import PaymentInjector from "./PaymentInjector";
 
 interface Props {
   editMode: boolean;
@@ -41,17 +41,27 @@ const Toolbar = React.forwardRef(
     const [deletedElements, setDeletedElements] = React.useState<HTMLElement[]>(
       []
     );
+    const [hide, setHide] = React.useState(false);
     const [paymentEl, setPaymentEl] = React.useState<React.ReactPortal | null>(
       null
     );
 
-    const escFunction = React.useCallback(
+    const handleKeyboardShortcut = React.useCallback(
       (event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-          setEditMode(false);
+        if (editMode) {
+          if (event.key === "Escape") {
+            setEditMode(false);
+          }
+          if (
+            ["Backspace", "Delete"].includes(event.key) &&
+            selected &&
+            !hide
+          ) {
+            deleteSelected();
+          }
         }
       },
-      [setEditMode]
+      [setEditMode, selected, editMode, hide]
     );
 
     const deleteSelected = React.useCallback(() => {
@@ -69,7 +79,10 @@ const Toolbar = React.forwardRef(
       }
     }, [deletedElements]);
 
-    const hideToolbar = React.useCallback(() => {}, []);
+    const hideToolbar = React.useCallback(() => {
+      document.body.style.top = "";
+      setHide(true);
+    }, []);
 
     const insertStripePaymentElement = React.useCallback(() => {
       if (selected) {
@@ -83,39 +96,36 @@ const Toolbar = React.forwardRef(
         setEditMode(false);
         setPaymentEl(
           ReactDOM.createPortal(
-            <Elements stripe={stripePromise}>
-              <Payment ref={paymentRef} {...{ stripePromise }} />
-            </Elements>,
+            <PaymentInjector ref={paymentRef} {...{ stripePromise }} />,
             selected
           )
         );
+        setSelected(null);
       }
     }, [stripePromise, selected]);
 
     React.useEffect(() => {
-      document.addEventListener("keydown", escFunction, false);
+      document.addEventListener("keydown", handleKeyboardShortcut, false);
 
       return () => {
-        document.removeEventListener("keydown", escFunction, false);
+        document.removeEventListener("keydown", handleKeyboardShortcut, false);
       };
-    }, [escFunction]);
+    }, [handleKeyboardShortcut]);
 
     return (
       <div
         ref={ref}
-        style={{
-          backgroundColor: "rgba(99, 91, 255, 1)",
-          height: "4rem",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
+        className={
+          "fixed w-full items-center z-[10000] bg-blurple space-between " +
+          (hide ? "hidden" : "flex")
+        }
       >
         <div style={{ width: "30%", height: "100%", display: "flex" }}>
           <img
             src={chrome.runtime.getURL("assets/remix-logo.png")}
             style={{
               marginRight: "1rem",
-              height: "3rem",
+              height: "4rem",
               display: "flex",
               alignSelf: "center",
             }}
@@ -130,30 +140,23 @@ const Toolbar = React.forwardRef(
             width: "70%",
           }}
         >
-          <button
+          <Button
             style={buttonStyles}
             onClick={deleteSelected}
             disabled={!selected}
           >
             Delete
-          </button>
-          <button
-            style={buttonStyles}
-            onClick={restoreDeleted}
-            disabled={!deletedElements.length}
-          >
-            Restore
-          </button>
-          <button
+          </Button>
+          <Button
             style={buttonStyles}
             disabled={!selected}
             onClick={insertStripePaymentElement}
           >
             Insert Stripe
-          </button>
-          <button style={buttonStyles} onClick={hideToolbar}>
+          </Button>
+          <Button style={buttonStyles} onClick={hideToolbar}>
             Hide
-          </button>
+          </Button>
           <div
             style={{
               display: "flex",

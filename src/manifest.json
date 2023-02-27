@@ -13,7 +13,8 @@
     "https://pay.google.com/*",
     "https://api.stripe.com/*",
     "https://hooks.stripe.com/*",
-    "https://js.stripe.com/v3"
+    "https://js.stripe.com/v3",
+    "https://r.stripe.com/*"
   ],
   "content_security_policy": "script-src 'self' https://js.stripe.com/v3; object-src 'self'; frame-src https://js.stripe.com/v3",
   "browser_action": {
